@@ -1259,7 +1259,9 @@ const SITE = {
   "vervemobile":"https://myverveworld.com/"
 };
 function CaseStudy(slug){
-  const i = CASE[slug], c = CASES[i], n = CASES[(i+1)%CASES.length];
+  const i = CASE[slug], c = CASES[i];
+  const ORDER = [...new Set(["p","b","o"].flatMap(k=>WORK.filter(w=>w[4]===k && w[3] in CASE).map(w=>w[3])))];
+  const oi = ORDER.indexOf(slug), n = oi<0 ? CASES[(i+1)%CASES.length] : CASES[CASE[ORDER[(oi+1)%ORDER.length]]];
   const hero = CASE_MOTION[slug];
   const toc = c.toc.map(t=>[t[0], t[1]===null?null:(hero && hero.mode!=="replace" && t[1]>=Math.max(1,c.secs.findIndex(s=>s.t==="img")) ? t[1]+1 : t[1])]).filter(t=>t[1]!==null).map(([l,s])=>`<a href="#work/${slug}" data-sec="s${s}"><span class="dash"></span>${esc(l)}</a>`).join("");
   const url = SITE[slug] || c.site;
