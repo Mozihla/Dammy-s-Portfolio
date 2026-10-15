@@ -595,7 +595,7 @@ const CASES=[{"slug":"renmoney-loan-optimization","co":"Renmoney Microfinance ba
   const S = (label, head, body) => `<div class="rc"><p class="rc-l">${label}</p>${head ? `<h2 class="rc-h">${head}</h2>` : ""}${body}</div>`;
   const P = t => `<p>${t}</p>`;
   const UL = items => `<ul>${items.map(i => `<li>${i}</li>`).join("")}</ul>`;
-  const DIM = {"cover":[2880,1620],"use-hubs":[2976,2448],"buttons":[2976,1392],"radius":[2976,968],"product-colour":[2976,1110],"amount":[2976,1112],"pin":[2976,1130],"built":[2976,718],"modes":[2976,1318],"use-consequence":[2976,1856],"health":[2976,860],"before-after":[2976,1778],"use-money":[2976,2496],"audit":[2976,1312],"a11y":[2976,878],"principles":[2976,1336],"elevation":[2976,1222],"typefaces":[2976,1204]};
+  const DIM = {"cover":[2880,1620],"use-hubs":[2976,2480],"buttons":[2976,1424],"radius":[2976,952],"product-colour":[2976,1142],"amount":[2976,1048],"pin":[2976,1162],"built":[2976,750],"modes":[2976,1350],"use-consequence":[2976,1888],"health":[2976,844],"before-after":[2976,1762],"use-money":[2976,2528],"audit":[2976,1344],"a11y":[2976,910],"principles":[2976,1368],"elevation":[2976,1206],"typefaces":[2976,1236]};
   let ex = 0;
   const IMG = (k, cap, alt, use) => ({t:"img", src:`media/renny/${k}.webp`, w:DIM[k][0], h:DIM[k][1], alt: alt || cap, cap, n: use ? `Usage ${String(use).padStart(2,"0")}` : `Excerpt ${String(++ex).padStart(2,"0")}`});
   const stat = (n, l, c) => `<div class="rs"><b style="color:${c}">${n}</b><span>${l}</span></div>`;
@@ -635,7 +635,7 @@ const CASES=[{"slug":"renmoney-loan-optimization","co":"Renmoney Microfinance ba
     {t:"html", l:"Foundations", h: S("Foundations", "Colour, type, shape and elevation, rebuilt as tokens", P("The brand stayed recognisable; what changed is that every value now has a name, a scope and a reason."))},
     IMG("product-colour","Product colour system: each product owns a core and a subtle tint, applied to marks, progress fills, chart series and tags."),
     IMG("modes","One component, two modes. The same instances; only the frame’s colour mode differs, so Dark ships as a setting, not a redesign."),
-    IMG("typefaces","Typefaces referenced through variables: a display face for titles, a sans for everything else, amounts included."),
+    IMG("typefaces","Uxum Grotesque and PP Neue Montreal, the Renmoney brand faces, set through font variables so one change reaches every style."),
     IMG("amount","Anatomy of an amount: naira first, kobo de-emphasised, sign and colour always agree, masked balances keep their width."),
     IMG("radius","Radius: eight tokens replace 27 measured values. Larger components get larger radii so nested corners stay concentric."),
     IMG("elevation","Elevation: hard shadows mean “press me”, soft shadows mean “I’m floating”. Never both on one element."),
