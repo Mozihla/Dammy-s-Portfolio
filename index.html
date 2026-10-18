@@ -646,6 +646,58 @@ html.lb-open .cur{z-index:70}
   .pg-n{display:none}
 }
 @media (prefers-reduced-motion:reduce){.kpg .pg-t{clip-path:none!important}.kpg .pg-m{top:0;bottom:0;transform:none!important}.kpg .pg-m img,.kpg .pg-m video{transform:none!important}}
+/* ===== Work: FLIP filter + list/grid morph (experiment) ===== */
+.whead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.whead .label{margin:0}
+.odo{display:inline-flex;font-size:44px;line-height:1;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.od{display:inline-block;height:1em;overflow:hidden}
+.os{display:flex;flex-direction:column;transform:translateY(calc(var(--d) * -1em));transition:transform .9s cubic-bezier(.76,0,.24,1)}
+.os i{font-style:normal;height:1em;line-height:1}
+.od:nth-child(2) .os{transition-delay:.06s}
+.wbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:12px 0 4px}
+.wbar .chips{margin-bottom:12px}
+.vt{display:inline-flex;gap:2px;padding:3px;border-radius:20px;background:var(--chip);flex:none}
+.vt button{width:34px;height:24px;border:0;border-radius:16px;background:transparent;color:var(--grey);display:grid;place-items:center;cursor:pointer;transition:background .25s,color .25s}
+.vt button[aria-pressed="true"]{background:var(--orange-02);color:var(--white)}
+.vt svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.5}
+.vt rect{fill:currentColor;stroke:none}
+.grid{position:relative}
+/* list rows get a thumbnail */
+.case .th{position:absolute;left:16px;top:16px;width:44px;height:55px;border-radius:6px;overflow:hidden;background:var(--chip);transform-origin:0 0;will-change:transform;z-index:1}
+.case .th img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--ease-out)}
+.case .th.ph{display:grid;place-items:center;background:linear-gradient(140deg,#262626,#161616)}
+.case .th.ph b{font:500 13px/1 var(--mono, monospace);color:#6d6d6d;letter-spacing:.06em}
+.case .tx{position:absolute;inset:0 0 0 60px;transform-origin:0 0}
+.flipping .case{overflow:visible;z-index:auto}
+.flipping .case .th{z-index:2}
+.ghost{z-index:0}
+/* grid (gallery) view */
+.grid.gal{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:auto;gap:14px}
+.gal .case{height:auto;aspect-ratio:4/5;border-bottom:0;border-radius:10px}
+.gal .case::before,.gal .case .go{display:none}
+.gal .case .th{inset:0;left:0;top:0;width:100%;height:100%;border-radius:10px}
+.gal .case:hover .th img{transform:scale(1.05)}
+.gal .case .th.ph b{font-size:30px}
+.gal .case .tx{inset:auto 0 0 0;padding:44px 14px 14px;background:linear-gradient(to top,rgba(0,0,0,.78),rgba(0,0,0,0));border-radius:0 0 10px 10px;z-index:2;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.gal .case .meta,.gal .case .title{position:static;white-space:normal}
+.gal .case .meta{font-size:11px;color:rgba(255,255,255,.62);gap:8px;flex-wrap:wrap}
+.gal .case .title{font-size:16px;line-height:1.25;color:#fff}
+.gal .case:hover .title{transform:none}
+.gal .case .tag{position:absolute;top:-30px;right:12px}
+@media (max-width:760px){
+  .odo{font-size:34px}
+  .wbar{flex-direction:row}
+  .case{padding-left:76px}
+  .case .tx{position:static;inset:auto;display:flex;flex-direction:column;gap:12px}
+  .grid.gal{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .gal .case{padding:0;min-height:0}
+  .gal .case .tx{position:absolute;inset:auto 0 0 0;padding:36px 10px 10px;gap:4px}
+  .gal .case .title{font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){.os{transition:none}}
+.case .title{overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 32px)}
+.gal .case .title,.flipping .case .title{max-width:none}
+@media (max-width:760px){.case .title{max-width:none}}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
@@ -928,7 +980,7 @@ const Motion = (() => {
       cur.classList.toggle("view", !!v);
       cur.classList.toggle("link", !v && !!a);
       if(v) cur.querySelector(".lbl").textContent = v.dataset.cur;
-      const c = e.target.closest("[data-cover]");
+      const c = e.target.closest("[data-cover]:not(.gal *)");
       if(c){ if(pimg.getAttribute("src") !== c.dataset.cover) pimg.src = c.dataset.cover; pv.classList.add("on"); }
       else pv.classList.remove("on");
     });
@@ -1176,44 +1228,115 @@ function Tag(v){
 
 /* Work module */
 const CASE = Object.fromEntries(CASES.map((c,i)=>[c.slug,i]));
-function CaseRow([co,yr,title,slug,,tag]){
-  const internal = slug in CASE, req = slug==="request";
-  const meta = `<span class="meta mono"><span>${esc(co)}</span>${yr?`<span class="dash"></span><span>${yr}</span>`:""}</span>
-    <span class="title">${esc(title)}</span>${internal ? "" : Tag(tag)}`;
-  if(internal) return `<a class="case" href="#work/${slug}" data-cover="${CASES[CASE[slug]].cover}" data-cur="View">${meta}<span class="go" aria-hidden="true">↗</span></a>`;
-  if(req) return `<a class="case" href="${CONFIG.linkedin}" target="_blank" rel="noopener" data-cur="Ask">${meta}<span class="go" aria-hidden="true">↗</span></a>`;
-  const cover = {"pressone-call-flow":"media/stills/pressone-callflow.webp","rivr-product":"media/motion/riur.webp","rivr-branding":"media/motion/riur.webp","dropcart-product":"media/motion/dropcart.webp","dropcart-branding":"media/motion/dropcart.webp","altovida-branding":"media/motion/altovida.webp"}[slug];
-  return `<div class="case soon"${cover?` data-cover="${cover}"`:""} data-cur="Soon" title="Case study coming soon">${meta}</div>`;
+/* ---- Work list: FLIP filter + list/grid view morph (experiment) ---- */
+const SOON_COVER = {"pressone-call-flow":"media/stills/pressone-callflow.webp","rivr-branding":"media/motion/riur.webp","dropcart-branding":"media/motion/dropcart.webp","altovida-branding":"media/motion/altovida.webp"};
+function coverOf(slug){ return slug in CASE ? (CASES[CASE[slug]].cover || CASES[CASE[slug]].thumb) : SOON_COVER[slug]; }
+function initials(s){ return s.replace(/[^A-Za-z0-9 ]/g," ").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase(); }
+function CaseRow(w){
+  const [co,yr,title,slug,,tag] = w, k = WORK.indexOf(w);
+  const internal = slug in CASE, req = slug==="request", cov = coverOf(slug);
+  const th = cov ? `<span class="th"><img src="${cov}" alt="" loading="lazy" decoding="async"></span>` : `<span class="th ph"><b>${esc(initials(co))}</b></span>`;
+  const tx = `<span class="tx"><span class="meta mono"><span>${esc(co)}</span>${yr?`<span class="dash"></span><span>${yr}</span>`:""}</span>
+    <span class="title">${esc(title)}</span>${internal ? "" : Tag(tag)}</span>`;
+  if(internal) return `<a class="case" data-k="${k}" href="#work/${slug}" data-cover="${cov}" data-cur="View">${th}${tx}<span class="go" aria-hidden="true">↗</span></a>`;
+  if(req) return `<a class="case" data-k="${k}" href="${CONFIG.linkedin}" target="_blank" rel="noopener" data-cur="Ask">${th}${tx}<span class="go" aria-hidden="true">↗</span></a>`;
+  return `<div class="case soon" data-k="${k}"${cov?` data-cover="${cov}"`:""} data-cur="Soon" title="Case study coming soon">${th}${tx}</div>`;
 }
 function WorkList(key){
   const f = FILTERS.find(x=>x[0]===key) || FILTERS[0];
   return WORK.filter(w => !f[2] || w[4].includes(f[2]));
 }
 const isFilter = k => FILTERS.some(f=>f[0]===k);
-/* Seamless filter: swap only the grid, no page transition */
+let VIEW = (()=>{ try{ return localStorage.getItem("wv")==="grid" ? "grid" : "list"; }catch(e){ return "list"; } })();
+
+/* odometer counter */
+function Odo(n){
+  const s = String(n).padStart(2,"0");
+  return `<span class="odo" aria-label="${n} projects">${[...s].map(d=>`<span class="od"><span class="os" style="--d:${d}">${"0123456789".split("").map(x=>`<i>${x}</i>`).join("")}</span></span>`).join("")}</span>`;
+}
+function setOdo(n){
+  const o = $(".whead .odo"); if(!o) return;
+  const s = String(n).padStart(2,"0"); o.setAttribute("aria-label", n+" projects");
+  o.querySelectorAll(".os").forEach((c,i)=>c.style.setProperty("--d", s[i]));
+}
+
+/* FLIP core: snapshot -> mutate -> invert -> play */
+const EASE = "cubic-bezier(.76,0,.24,1)", EASE_OUT = "cubic-bezier(.16,1,.3,1)";
+function flipGrid(grid, mutate, opt={}){
+  const g0 = grid.getBoundingClientRect(), h0 = grid.offsetHeight, snap = new Map();
+  grid.querySelectorAll(".case:not(.ghost)").forEach(el => snap.set(el.dataset.k, {el, r:el.getBoundingClientRect(), t:el.querySelector(".th").getBoundingClientRect(), x:el.querySelector(".tx").getBoundingClientRect()}));
+  grid.querySelectorAll(".ghost").forEach(n=>n.remove());
+  const keep = mutate(snap);              // returns Set of keys still present
+  if(Motion.RM || !grid.animate) return;
+  const g1 = grid.getBoundingClientRect(), h1 = grid.offsetHeight, D = opt.dur || 820;
+  grid.classList.add("flipping");
+  /* leavers: ghost at old spot, shrink + fade */
+  snap.forEach((s,k) => {
+    if(keep.has(k)) return;
+    const gh = s.el.cloneNode(true); gh.classList.add("ghost"); gh.removeAttribute("href"); gh.setAttribute("aria-hidden","true");
+    Object.assign(gh.style,{position:"absolute",left:(s.r.left-g1.left)+"px",top:(s.r.top-g1.top)+"px",width:s.r.width+"px",height:s.r.height+"px",margin:0,pointerEvents:"none"});
+    grid.appendChild(gh);
+    gh.animate([{opacity:1,transform:"none",filter:"blur(0)"},{opacity:0,transform:"translateY(-14px) scale(.9)",filter:"blur(6px)"}],{duration:300,easing:EASE_OUT,fill:"forwards"}).onfinish=()=>gh.remove();
+  });
+  /* stayers + enterers */
+  let i = 0, n = 0;
+  grid.querySelectorAll(".case:not(.ghost)").forEach(el => {
+    const s = snap.get(el.dataset.k), th = el.querySelector(".th"), tx = el.querySelector(".tx"), delay = (i++)*(opt.stagger ?? 28);
+    if(s && keep.has(el.dataset.k)){
+      const t = th.getBoundingClientRect(), x = tx.getBoundingClientRect();
+      const dx=s.t.left-t.left, dy=s.t.top-t.top, sx=s.t.width/t.width, sy=s.t.height/t.height;
+      if(Math.abs(dx)+Math.abs(dy)+Math.abs(sx-1)+Math.abs(sy-1) < .5) return;
+      th.animate([{transform:`translate(${dx}px,${dy}px) scale(${sx},${sy})`},{transform:"none"}],{duration:D,delay,easing:EASE,fill:"backwards"});
+      const tdx=s.x.left-x.left, tdy=s.x.top-x.top;
+      if(opt.view) tx.animate([{opacity:1,transform:`translate(${tdx}px,${tdy}px)`},{opacity:0,offset:.35},{opacity:0,transform:"none",offset:.6},{opacity:1,transform:"none"}],{duration:D,delay,easing:EASE,fill:"backwards"});
+      else tx.animate([{transform:`translate(${tdx}px,${tdy}px)`},{transform:"none"}],{duration:D,delay,easing:EASE,fill:"backwards"});
+    } else {
+      const d = 70 + (n++)*40;
+      th.animate([{opacity:0,transform:"translateY(42px) scale(.86)",filter:"blur(8px)"},{opacity:1,transform:"none",filter:"blur(0)"}],{duration:760,delay:d,easing:EASE_OUT,fill:"backwards"});
+      tx.animate([{opacity:0,transform:"translateY(16px)"},{opacity:1,transform:"none"}],{duration:620,delay:d+80,easing:EASE_OUT,fill:"backwards"});
+    }
+  });
+  grid.style.overflow = "visible";
+  const ha = grid.animate([{height:h0+"px"},{height:h1+"px"}],{duration:D,easing:EASE});
+  clearTimeout(grid._ft); grid._ft = setTimeout(()=>grid.classList.remove("flipping"), D + i*(opt.stagger ?? 28) + 200);
+  ha.onfinish = () => grid.style.overflow = "";
+}
+
+/* Seamless filter: FLIP the grid instead of fading it */
 function applyFilter(key){
   const grid = $(".cases .grid"); if(!grid) return false;
   document.querySelectorAll(".chips .chip").forEach(c => c.setAttribute("aria-pressed", c.getAttribute("href")==="#"+key));
-  const h0 = grid.offsetHeight;
-  const swap = () => {
-    grid.innerHTML = WorkList(key).map(CaseRow).join("");
-    const rows = [...grid.children];
-    rows.forEach((r,i) => { r.classList.add("rv"); r.style.setProperty("--i", Math.min(i,12)); });
-    const h1 = grid.offsetHeight;
-    if(!Motion.RM && grid.animate){ grid.style.overflow="hidden"; grid.animate([{height:h0+"px"},{height:h1+"px"}],{duration:450,easing:"cubic-bezier(.16,1,.3,1)"}).onfinish = () => grid.style.overflow=""; }
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{ rows.forEach(r=>r.classList.add("in")); grid.classList.remove("out"); }));
-  };
-  if(Motion.RM){ swap(); return true; }
-  grid.classList.add("out"); setTimeout(swap, 180);
+  const list = WorkList(key);
+  setOdo(list.length);
+  flipGrid(grid, snap => {
+    const keep = new Set(), frag = document.createDocumentFragment(), tmp = document.createElement("div");
+    list.forEach(w => {
+      const k = String(WORK.indexOf(w));
+      if(snap.has(k)){ keep.add(k); frag.appendChild(snap.get(k).el); }
+      else { tmp.innerHTML = CaseRow(w); frag.appendChild(tmp.firstElementChild); }
+    });
+    snap.forEach((s,k)=>{ if(!keep.has(k)) s.el.remove(); });
+    grid.appendChild(frag);
+    return keep;
+  });
   return true;
 }
+function setView(v){
+  if(v===VIEW) return; VIEW = v; try{ localStorage.setItem("wv", v); }catch(e){}
+  document.querySelectorAll(".vt button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.view===v));
+  const grid = $(".cases .grid"); if(!grid) return;
+  flipGrid(grid, snap => { grid.classList.toggle("gal", v==="grid"); return new Set(snap.keys()); }, {view:true, dur:900, stagger:22});
+}
+document.addEventListener("click", e => { const b = e.target.closest(".vt button"); if(b){ e.preventDefault(); setView(b.dataset.view); } });
+
 function Work(key){
   const f = FILTERS.find(x=>x[0]===key) || FILTERS[0];
   const list = WorkList(key);
   const chips = FILTERS.map(([k,l,c]) => `<a class="chip mono" data-filter="${k}" href="#${k}" aria-pressed="${k===f[0]}">${l}<span class="n">${WORK.filter(w=>!c||w[4].includes(c)).length}</span></a>`).join("");
-  return `<section class="cases"><p class="label">Case Studies</p>
-    <div class="chips" role="group" aria-label="Filter case studies">${chips}</div>
-    <div class="grid">${list.map(CaseRow).join("")}</div></section>`;
+  const vt = `<div class="vt mono" role="group" aria-label="Layout"><button type="button" data-view="list" aria-pressed="${VIEW==="list"}" aria-label="List view"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button><button type="button" data-view="grid" aria-pressed="${VIEW==="grid"}" aria-label="Grid view"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg></button></div>`;
+  return `<section class="cases"><div class="whead"><p class="label">Case Studies</p>${Odo(list.length)}</div>
+    <div class="wbar"><div class="chips" role="group" aria-label="Filter case studies">${chips}</div>${vt}</div>
+    <div class="grid${VIEW==="grid"?" gal":""}">${list.map(CaseRow).join("")}</div></section>`;
 }
 
 function Introduction(){
