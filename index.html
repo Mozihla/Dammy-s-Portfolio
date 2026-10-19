@@ -734,6 +734,8 @@ html.lb-open .cur{z-index:70}
 .shake{animation:gshake .4s}
 @keyframes gshake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 @media (max-width:760px){.gate-card{margin-top:24px;padding:24px}.gate h1{font-size:24px}.gate-f{flex-direction:column}}
+.tag.soon-tag{left:auto;right:16px;white-space:nowrap}
+.gal .case .tag.soon-tag{top:-30px;right:12px}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
@@ -1262,6 +1264,7 @@ function Hero(){
     <div class="rot" id="rot"><span class="more">More</span><span class="win"><span class="track"><span>than Design</span><span>about Dammy</span></span></span></div></section>`;
 }
 function Tag(v){
+  if(v==="Soon") return `<span class="tag soon-tag mono">Coming soon</span>`;
   if(v==="WIP") return `<span class="tag mono">WIP</span>`;
   if(v==="AuR") return `<span class="tag aur mono" aria-label="Available upon request">AuR<span class="tip">Available upon request · ask on LinkedIn</span></span>`;
   return "";
@@ -1343,8 +1346,13 @@ function coverOf(slug){ return slug in CASE ? (CASES[CASE[slug]].cover || CASES[
 function hiOf(slug){ if(!(slug in CASE)) return SOON_COVER[slug]; const c = CASES[CASE[slug]], f = (c.secs||[]).find(x=>x.t==="img" && x.src && x.w>=x.h); return f ? f.src : coverOf(slug); }
 function sharpen(grid){ grid.querySelectorAll(".th img[data-hi]").forEach(i=>{ if(i.getAttribute("src")===i.dataset.hi) return; const n=new Image(); n.onload=()=>{ i.src=i.dataset.hi; }; n.src=i.dataset.hi; }); }
 function initials(s){ return s.replace(/[^A-Za-z0-9 ]/g," ").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase(); }
+/* Everything under "Others" is shown as coming soon, case study or not */
+const OTHERS_SOON = new Set(WORK.filter(w => w[4] === "o" && w[3] !== "request").map(w => w[3]));
+const hiddenCase = slug => OTHERS_SOON.has(slug) && !WORK.some(w => w[3] === slug && w[4] !== "o");
 function CaseRow(w){
-  const [co,yr,title,slug,,tag] = w, k = WORK.indexOf(w);
+  const [co,yr,title,slug,,tag0] = w, k = WORK.indexOf(w);
+  if(w[4] === "o") return SoonRow(w, k);
+  const tag = tag0;
   const internal = slug in CASE, req = slug==="request", cov = coverOf(slug);
   const hi = hiOf(slug), th = cov ? `<span class="th"><img src="${VIEW==="grid"?hi:cov}" data-hi="${hi}" alt="" loading="lazy" decoding="async"></span>` : `<span class="th ph"><b>${esc(initials(co))}</b></span>`;
   const tx = `<span class="tx"><span class="meta mono"><span>${esc(co)}</span>${yr?`<span class="dash"></span><span>${yr}</span>`:""}</span>
@@ -1354,6 +1362,12 @@ function CaseRow(w){
   if(internal) return `<a class="case" data-k="${k}" href="#work/${slug}"${cov && !cov.includes("#v=") ? ` data-cover="${cov}"` : ""} data-cur="View">${th}${tx}<span class="go" aria-hidden="true">↗</span></a>`;
   if(req) return `<a class="case" data-k="${k}" href="${CONFIG.linkedin}" target="_blank" rel="noopener" data-cur="Ask">${th}${tx}<span class="go" aria-hidden="true">↗</span></a>`;
   return `<div class="case soon" data-k="${k}"${cov?` data-cover="${cov}"`:""} data-cur="Soon" title="Case study coming soon">${th}${tx}</div>`;
+}
+function SoonRow([co,yr,title,slug], k){
+  const cov = slug in CASE ? coverOf(slug) : SOON_COVER[slug];
+  const th = cov && !cov.includes("#v=") ? `<span class="th"><img src="${cov}" alt="" loading="lazy" decoding="async"></span>` : `<span class="th ph"><b>${esc(initials(co))}</b></span>`;
+  return `<div class="case soon" data-k="${k}" data-cur="Soon" title="Case study coming soon">${th}<span class="tx"><span class="meta mono"><span>${esc(co)}</span>${yr?`<span class="dash"></span><span>${yr}</span>`:""}</span>
+    <span class="title">${esc(title)}</span>${Tag("Soon")}</span></div>`;
 }
 function WorkList(key){
   const f = FILTERS.find(x=>x[0]===key) || FILTERS[0];
@@ -1625,7 +1639,7 @@ const SITE = {
 };
 function CaseStudy(slug){
   const i = CASE[slug], c = CASES[i];
-  const ORDER = [...new Set(["p","d","b","o"].flatMap(k=>WORK.filter(w=>w[4]===k && w[3] in CASE).map(w=>w[3])))];
+  const ORDER = [...new Set(["p","d","b"].flatMap(k=>WORK.filter(w=>w[4]===k && w[3] in CASE).map(w=>w[3])))];
   const oi = ORDER.indexOf(slug), n = oi<0 ? CASES[(i+1)%CASES.length] : CASES[CASE[ORDER[(oi+1)%ORDER.length]]];
   const hero = CASE_MOTION[slug];
   const toc = c.toc.map(t=>[t[0], t[1]===null?null:(hero && hero.mode!=="replace" && t[1]>=Math.max(1,c.secs.findIndex(s=>s.t==="img")) ? t[1]+1 : t[1])]).filter(t=>t[1]!==null).map(([l,s])=>`<a href="#work/${slug}" data-sec="s${s}"><span class="dash"></span>${esc(l)}</a>`).join("");
@@ -1666,7 +1680,8 @@ let rotTimer, ready = false;
 function render(){
   let key = (location.hash||"").slice(1) || "home";
   let html;
-  if(key.startsWith("work/") && key.slice(5) in CASE) html = CaseStudy(key.slice(5));
+  if(key.startsWith("work/") && hiddenCase(key.slice(5))) { key = "others"; history.replaceState(null,"","#others"); html = Shell(key, Work(key)); }
+  else if(key.startsWith("work/") && key.slice(5) in CASE) html = CaseStudy(key.slice(5));
   else if(key.startsWith("work/") && VAULT.locked(key.slice(5))) html = Gate(key.slice(5));
   else if(FILTERS.some(f=>f[0]===key)) html = Shell(key, Work(key));
   else if(key==="profile") html = Profile();
