@@ -77,12 +77,12 @@ p{margin:0}
 
 /* ---------- Hero + Component 1 ---------- */
 .hero{margin-top:110px;margin-left:-2px;display:flex;flex-direction:column;gap:20px}
-.rot{display:flex;gap:14px;align-items:center;font-size:50px;line-height:1.2;letter-spacing:.01em}
-.rot .more{color:var(--grey)}
-.rot .win{display:block;height:64px;width:373px;max-width:100%;overflow:hidden;padding-left:5px}
-.rot .track{display:flex;flex-direction:column;gap:11px;color:var(--ink);transition:transform .7s cubic-bezier(.7,0,.2,1)}
-.rot .track span{display:block;height:60px;white-space:nowrap}
-.rot.flip .track{transform:translateY(-71px)}
+.rot{display:flex;gap:.28em;align-items:flex-start;font-size:50px;line-height:1.2;letter-spacing:.01em}
+.rot .more{color:var(--grey);display:block;height:1.2em;line-height:1.2em;white-space:nowrap}
+.rot .win{display:block;height:1.2em;min-width:0;overflow:hidden}
+.rot .track{display:flex;flex-direction:column;gap:0;color:var(--ink);transition:transform .7s cubic-bezier(.7,0,.2,1)}
+.rot .track span{display:block;height:1.2em;line-height:1.2em;white-space:nowrap}
+.rot.flip .track{transform:translateY(-1.2em)}
 
 /* ---------- Main: Frame 73 + content ---------- */
 .main{margin-top:160px;display:grid;grid-template-columns:198px 800px;justify-content:space-between;column-gap:24px;align-items:start}
@@ -214,8 +214,6 @@ a.case:hover .title{color:var(--white)}
   .hright{gap:20px}
   .hero{margin-top:48px}
   .big,.rot{font-size:clamp(32px,9vw,44px)}
-  .rot .win{height:calc(1.2em + 4px)}.rot .track span{height:1.2em}.rot .track{gap:4px}
-  .rot.flip .track{transform:translateY(calc(-1.2em - 4px))}
   .lede{font-size:24px}.para{font-size:17px}
   .grid{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto}
   .case{height:auto;min-height:87px;padding:16px 64px 16px 16px;display:flex;flex-direction:column;gap:12px}
@@ -784,6 +782,54 @@ html.theme-anim,html.theme-anim *{transition:background-color .35s ease,color .3
   .gal .case .cats{justify-content:flex-start;max-width:none}
 }
 
+/* ===== Intro loader: words and counter share one line, one line box ===== */
+.intro-l .lrot{align-items:flex-start}
+.intro-l .lrot .m{height:1.1em;line-height:1.1em;padding-bottom:0}
+.intro-l .lrot .m>span{line-height:1.1em}
+.intro-l .lrot .trk span{line-height:1.1em}
+
+/* ===== Mobile: hamburger, menu sheet, floating contact buttons, WIP at the bottom ===== */
+.menu-t,.mnav,.fab,.wip-m{display:none}
+@media (max-width:760px){
+  .hdr .hnav,.hdr .hright .copy,.hdr .hright .chat,.side{display:none!important}
+  .hdr{flex-wrap:nowrap;gap:10px}
+  .hdr .theme-t{margin-left:auto}
+  .hdr.back-v .hright{margin-left:auto;gap:10px}
+  .hdr.back-v .theme-t{margin-left:0}
+  .menu-t{display:grid;place-content:center;gap:6px;width:40px;height:40px;border-radius:50%;border:1px solid var(--card-line);background:var(--bg);position:relative;z-index:31;flex:none}
+  .menu-t span{display:block;width:16px;height:1.5px;border-radius:2px;background:var(--ink);transition:transform .35s var(--ease-out)}
+  .menu-open .menu-t span:first-child{transform:translateY(3.75px) rotate(45deg)}
+  .menu-open .menu-t span:last-child{transform:translateY(-3.75px) rotate(-45deg)}
+  .menu-open .hdr{position:relative;z-index:31}
+  .mnav:not([hidden]){display:flex;position:fixed;inset:0;z-index:30;background:var(--bg);flex-direction:column;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 104px) max(20px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 104px) max(20px,env(safe-area-inset-left,0px));overflow:auto;animation:mnIn .35s var(--ease-out)}
+  .mn-main{display:flex;flex-direction:column}
+  .mn-a{font-size:30px;line-height:1.2;letter-spacing:-.01em;color:var(--ink);padding:10px 0;border-bottom:1px solid var(--row-line)}
+  .mn-a[aria-current="page"]{color:var(--orange-02)}
+  .mn-more{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin-top:28px}
+  .mn-more .label{width:100%;margin-bottom:2px}
+  .mn-b{color:var(--grey);text-decoration:underline;text-underline-offset:3px}
+  .menu-open body{overflow:hidden}
+  .fab{display:flex;gap:10px;position:fixed;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:32}
+  .fab a,.fab button{flex:1;height:48px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--mono);font-size:14px;letter-spacing:-.03em;box-shadow:0 10px 30px -8px rgba(0,0,0,.35)}
+  .fab-p{background:var(--orange-02);color:var(--on-accent)}
+  .fab-s{background:var(--bg);color:var(--ink);border:1px solid var(--card-line);text-align:center}
+  .fab-s svg{width:18px;height:18px}
+  .wip-m{display:flex;margin:56px 0 0}
+  .page{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .main{margin-top:40px}
+  .intro-l .foot{flex-wrap:nowrap;align-items:flex-end;gap:12px}
+  .intro-l .lrot{font-size:clamp(24px,7.4vw,34px)}
+  .intro-l .cnt{font-size:clamp(44px,14vw,64px)}
+}
+@keyframes mnIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.mnav{animation:none!important}}
+.mob-only{display:none!important}
+@media (max-width:760px){.mob-only{display:flex!important;margin-bottom:8px}}
+@media (max-width:760px){
+  .hdr .theme-t{order:1}.menu-t{order:2}
+  .fab::before{content:"";position:absolute;left:calc(-1*max(16px,env(safe-area-inset-left,0px)));right:calc(-1*max(16px,env(safe-area-inset-right,0px)));bottom:calc(-16px - env(safe-area-inset-bottom,0px));height:calc(100% + 48px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 55%,transparent);z-index:-1;pointer-events:none}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 
@@ -1289,20 +1335,42 @@ document.addEventListener("click", e => {
   document.querySelectorAll("[data-theme-toggle]").forEach(b => b.setAttribute("aria-label", `Switch to ${next === "light" ? "dark" : "light"} mode`));
   setTimeout(() => root.classList.remove("theme-anim"), 400);
 });
-function Header(variant="Normal"){
+/* Mobile: hamburger sheet with every menu option, plus floating Let's Chat / Copy email buttons */
+const MenuBtn = () => `<button class="menu-t" type="button" data-menu-toggle aria-expanded="false" aria-controls="mnav" aria-label="Open menu"><span></span><span></span></button>`;
+function MobileNav(active){
+  const act = FILTERS.some(f=>f[0]===active) ? "work" : active;
+  const items = MARKERS.filter(m=>!m.copy).map(m => m.link ? ext(m.link, m.label, "mn-a") : `<a class="mn-a" href="#${m.route}"${m.route===act?' aria-current="page"':''}>${m.label}</a>`).join("");
+  const more = [ext("folio2025","Folio 2025","mn-b"), ext("folio2024","Folio 2024","mn-b"), ext("brandfolio2022","Brandfolio 2022","mn-b")].join("");
+  return `<div class="mnav" id="mnav" hidden><nav class="mn-main" aria-label="Menu">${items}</nav><div class="mn-more mono"><p class="label">Elsewhere</p>${more}</div></div>
+  <div class="fab" role="group" aria-label="Contact"><a class="fab-p" href="mailto:${CONFIG.email}">Let’s Chat</a><button class="fab-s" type="button" data-copy>Copy my email ${ICON.copy}</button></div>`;
+}
+const MobHeader = () => `<header class="hdr mob-only"><a class="logo" href="#home" aria-label="Home"></a>${ThemeBtn()}${MenuBtn()}</header>${MobileNav("work")}`;
+function Header(variant="Normal", active=""){
   if(variant==="Back") return `<header class="hdr back-v">
     <a class="back mono" href="#home"><span class="arr" aria-hidden="true">←</span>Back</a>
     <div class="hright mono">${ThemeBtn()}
       <button class="copy" data-copy>Copy my email ${ICON.copy}</button>
       <button class="chat" data-copy data-mag>Let’s Chat</button>
-    </div></header>`;
+    </div>${MenuBtn()}</header>${MobileNav(active)}`;
   return `<header class="hdr">
     <a class="logo" href="#home" aria-label="Home"></a>${ThemeBtn()}
     <nav class="hnav mono" aria-label="Elsewhere">
       <a class="marker" href="#playground">My Playground</a>
       ${ext("folio2025","Folio 2025","marker")}${ext("folio2024","Folio 2024","marker")}${ext("brandfolio2022","Brandfolio 2022","marker")}
-    </nav></header>`;
+    </nav>${MenuBtn()}</header>${MobileNav(active)}`;
 }
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-menu-toggle]");
+  const sheet = document.getElementById("mnav");
+  if(t && sheet){
+    const open = sheet.hidden; sheet.hidden = !open;
+    document.documentElement.classList.toggle("menu-open", open);
+    document.querySelectorAll("[data-menu-toggle]").forEach(b => { b.setAttribute("aria-expanded", open); b.setAttribute("aria-label", open ? "Close menu" : "Open menu"); });
+    return;
+  }
+  if(sheet && !sheet.hidden && e.target.closest(".mnav a")){ sheet.hidden = true; document.documentElement.classList.remove("menu-open"); }
+});
+addEventListener("keydown", e => { const sheet = document.getElementById("mnav"); if(e.key === "Escape" && sheet && !sheet.hidden){ sheet.hidden = true; document.documentElement.classList.remove("menu-open"); document.querySelector("[data-menu-toggle]")?.focus(); } });
 function Marker(m, active){
   const inner = `<span class="dash"></span>${m.label}`;
   if(m.copy) return `<button class="marker" data-copy>${inner}</button>`;
@@ -1369,7 +1437,7 @@ const LOCK_IC = `<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" w
 function Gate(slug){
   const it = VAULT.items[slug];
   const mail = `mailto:${CONFIG.email}?subject=${encodeURIComponent("Access request: "+it.title)}`;
-  return `<div class="gate">
+  return MobHeader() + `<div class="gate">
     <a class="cs-back mono" href="#work"><span class="arr" aria-hidden="true">←</span>Back</a>
     <div class="gate-card">
       <span class="gate-ic">${LOCK_IC}</span>
@@ -1547,10 +1615,10 @@ function Component2(names, rev){
 }
 
 /* ========================= Frames ========================= */
-function Shell(active, body){ return Header() + `<div class="tzone"><div class="tlayer" aria-hidden="true"></div>${Hero()}<p class="thint mono" aria-hidden="true">Move your cursor here ↗</p></div>` + `<div class="main">${Sidebar(active)}<div class="content">${body}</div></div>`; }
+function Shell(active, body){ return Header("Normal", active) + `<div class="tzone"><div class="tlayer" aria-hidden="true"></div>${Hero()}<p class="thint mono" aria-hidden="true">Move your cursor here ↗</p></div>` + `<div class="main">${Sidebar(active)}<div class="content">${body}</div></div><p class="wip wip-m mono"><span class="wip-dot" aria-hidden="true"></span><span><b>Work in progress.</b> This portfolio is still growing, but there are some exciting case studies in here already.</span></p>`; }
 function Profile(){
   const tools = IMG.tools.map(([name,src],i) => `<div class="tool${i===IMG.tools.length-1?" wide":""}"${name?` title="${esc(name)}"`:""}><img src="${src}" alt="${esc(name)}" loading="lazy"></div>`).join("");
-  return Header("Back") + `<div class="about">
+  return Header("Back","profile") + `<div class="about">
     <div class="lcol">
       <h1 class="big"><b>Building</b> at the <b>edge</b> of <b>clarity</b>, <b>craft</b>, and <i>real impact</i>.</h1>
       <figure class="portrait-f"><img src="${IMG.portrait}" alt="Black and white portrait of Dammy smiling, in glasses and a denim jacket"></figure>
@@ -1589,7 +1657,7 @@ function Testimonials(){
   const cards = TESTIMONIALS.map(([c,r,name,role,q,sz,av],i) => `<figure class="card tcard" style="--c:${c};--r:${r};--i:${i}">
       <blockquote class="${sz}">${q}</blockquote>
       <figcaption><img class="tav" src="${av}" alt="" width="40" height="40"><span class="who"><b>${esc(name)}</b><small>${esc(role)}</small></span></figcaption></figure>`).join("");
-  return Header("Back") + `<section class="tests">
+  return Header("Back","testimonials") + `<section class="tests">
     <h1 class="big">Words From <b>People</b> I’ve Had the <b>Joy of Creating With</b></h1>
     <div class="tgrid">${cards}</div></section>`;
 }
@@ -1655,7 +1723,7 @@ function Playground(){
     full(A[31])
   ].join("");
   const nV = MEDIA.motion.length, nS = LB.length - nV;
-  return Header("Back") + `<section class="pg kpg">
+  return Header("Back","playground") + `<section class="pg kpg">
     <h1 class="big pg-title">Part <b>Flex</b>, Part <b>Flow</b>.<br>Just a handful of shots I find beautiful.</h1>
     <div class="kmeta mono"><span>${String(LB.length).padStart(2,"0")} pieces</span><span><i class="dot"></i>${String(nV).padStart(2,"0")} in motion</span><span>${nS} stills</span><span class="kh">Scroll ↓</span></div>
     <div class="kflow">${rows}</div>
@@ -1718,7 +1786,7 @@ function CaseStudy(slug){
     : s.t==="vid" ? `<figure class="cs-sec cs-img cs-vid" id="s${k}">${Vid(s, s.alt)}</figure>`
     : s.t==="img" ? `<figure class="cs-sec cs-img" id="s${k}"><img src="${s.src}" width="${s.w}" height="${s.h}" alt="${esc(s.alt)}" loading="${k<4?"eager":"lazy"}" decoding="async">${s.cap?`<figcaption class="cs-cap mono"><span>${esc(s.n||"")}</span>${esc(s.cap)}</figcaption>`:""}</figure>`
     : `<section class="cs-sec cs-live" id="s${k}">${s.h}</section>`).join("");
-  return `<div class="csp">
+  return MobHeader() + `<div class="csp">
     <aside class="cs-l"><a class="cs-back mono" href="#work"><span class="arr" aria-hidden="true">←</span>Back</a>
       <nav class="cs-toc mono" aria-label="On this page">${toc}</nav>${NextCard(n)}</aside>
     <article class="cs-c">
