@@ -857,6 +857,18 @@ html.theme-anim,html.theme-anim *{transition:background-color .35s ease,color .3
 }
 @keyframes msRun{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.ms-track{animation:none}.ms-win{overflow-x:auto}}
+/* Mobile header: logo, theme toggle and menu share one 36px height */
+@media (max-width:760px){
+  .hdr .logo{width:81px;height:36px;border-radius:18px;background-size:cover}
+  .hdr .theme-t,.menu-t{width:36px;height:36px}
+  .hdr .theme-t svg{width:15px;height:15px}
+  .menu-t{gap:5px}.menu-t span{width:14px}
+  .menu-open .menu-t span:first-child{transform:translateY(3.25px) rotate(45deg)}
+  .menu-open .menu-t span:last-child{transform:translateY(-3.25px) rotate(-45deg)}
+  .hdr{min-height:60px}
+  .hdr.back-v .back{height:36px}
+}
+@media (prefers-reduced-motion:reduce){.ms-track{animation:none}.cbub{transition:opacity .2s}}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
