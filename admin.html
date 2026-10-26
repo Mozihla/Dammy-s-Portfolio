@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Site Controls · Made by Dammy</title>
+<link rel="icon" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one working column — draft/live status, steps, category tabs, project ledger with a three-way switch per row, sticky action bar. Mirrors the portfolio's dark/orange system. */
+:root{
+  --bg:#f4f3f1;--panel:#ffffff;--line:#e3e1dc;--ink:#151413;--grey:#6f6c66;--accent:#e85a00;--accent-ink:#ffffff;
+  --open:#1f8a4c;--soon:#b45f06;--hidden:#7a7772;--chip:#ecebe7;--warn:#b42318;
+  --sans:"Inter Tight","Helvetica Neue",Arial,sans-serif;--mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{--bg:#111111;--panel:#191919;--line:#2a2a2a;--ink:#f1efea;--grey:#9a968e;--accent:#ff7a1a;--accent-ink:#111111;--open:#3ccf7c;--soon:#ffb257;--hidden:#8d8a84;--chip:#222222;--warn:#ff8a80;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);padding:32px max(16px,env(safe-area-inset-right,0px)) 120px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.lbl{font:500 11px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--grey);margin:0}
+h1{font:500 clamp(28px,5vw,40px)/1.1 var(--sans);letter-spacing:-.03em;margin:6px 0 0}
+p{margin:0}
+.muted{color:var(--grey)}
+a{color:inherit}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* gate */
+.gate{max-width:380px;margin:12vh auto 0;display:flex;flex-direction:column;gap:14px}
+.gate input{height:46px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:0 14px;font:inherit}
+.btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font:500 13px/1 var(--mono);color:var(--ink);white-space:nowrap}
+.btn.pri{background:var(--accent);border-color:transparent;color:var(--accent-ink)}
+.btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+.err{color:var(--warn);font-size:13px;min-height:1.2em}
+/* status */
+.status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.status div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.status b{font-weight:500}
+.steps{display:flex;flex-wrap:wrap;gap:8px;font:500 12px/1 var(--mono);color:var(--grey)}
+.steps span{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+.steps span.on{border-color:var(--accent);color:var(--accent)}
+.sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sum div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px;display:flex;flex-direction:column;gap:2px}
+.sum b{font:500 26px/1.1 var(--sans);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.sum .o b{color:var(--open)}.sum .s b{color:var(--soon)}.sum .h b{color:var(--hidden)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{all:unset;cursor:pointer;font:500 12px/1 var(--mono);padding:9px 12px;border-radius:999px;background:var(--chip);color:var(--grey)}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.bulk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:500 12px/1 var(--mono);color:var(--grey)}
+.bulk button{all:unset;cursor:pointer;padding:8px 10px;border-radius:8px;border:1px solid var(--line);color:var(--ink)}
+.list{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.grp{padding:14px 16px 6px;border-top:1px solid var(--line)}
+.grp:first-child{border-top:0}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+.grp+.row{border-top:0}
+.t{min-width:0}
+.nm{font-weight:500;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mt{font:400 12px/1.4 var(--mono);color:var(--grey)}
+.flag{font:500 10.5px/1 var(--mono);padding:4px 7px;border-radius:999px;border:1px solid var(--accent);color:var(--accent)}
+.seg{display:inline-flex;background:var(--chip);border-radius:999px;padding:3px;gap:2px}
+.seg button{all:unset;cursor:pointer;font:500 12px/1 var(--mono);padding:8px 11px;border-radius:999px;color:var(--grey);white-space:nowrap}
+.seg button[aria-pressed="true"][data-s="open"]{background:var(--open);color:var(--bg)}
+.seg button[aria-pressed="true"][data-s="soon"]{background:var(--soon);color:var(--bg)}
+.seg button[aria-pressed="true"][data-s="hidden"]{background:var(--hidden);color:var(--bg)}
+/* action bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.bar .in{max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar .msg{flex:1 1 220px;min-width:0;font-size:13px;color:var(--grey)}
+.bar .msg b{color:var(--ink);font-weight:500}
+.confirm{display:none;gap:8px;align-items:center;flex-wrap:wrap}
+.confirm.on{display:flex}
+.note{font-size:12.5px;color:var(--grey)}
+@media (max-width:620px){.row{grid-template-columns:1fr}.seg{justify-self:start}.status{grid-template-columns:1fr}.sum b{font-size:21px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap" id="gate-wrap">
+  <form class="gate" id="gate">
+    <p class="lbl">madebydammy.xyz</p>
+    <h1>Site Controls</h1>
+    <p class="muted">Enter your admin password to manage which projects show on your portfolio.</p>
+    <label class="lbl" for="pw">Admin password</label>
+    <input id="pw" type="password" autocomplete="current-password" required>
+    <button class="btn pri" type="submit">Open controls</button>
+    <p class="err" id="gate-err" role="alert"></p>
+  </form>
+</main>
+
+<main class="wrap" id="app" hidden>
+  <header>
+    <p class="lbl">madebydammy.xyz · works list</p>
+    <h1>Site Controls</h1>
+  </header>
+  <div class="status">
+    <div><p class="lbl">Live site</p><b id="live-at">–</b><span class="muted" id="live-n"></span></div>
+    <div><p class="lbl">Saved draft</p><b id="draft-at">–</b><span class="muted" id="draft-n"></span></div>
+  </div>
+  <div class="steps" aria-label="How changes go live"><span id="st1">1 · Change switches</span><span id="st2">2 · Save draft</span><span id="st3">3 · Preview draft</span><span id="st4">4 · Publish to live</span></div>
+  <p class="note"><b>Open</b>: listed and clickable. <b>Coming soon</b>: listed, locked, not clickable. <b>Hidden</b>: not listed, its page sends visitors to Works.</p>
+  <div class="sum" aria-live="polite">
+    <div class="o"><p class="lbl">Open</p><b id="n-open">–</b></div>
+    <div class="s"><p class="lbl">Coming soon</p><b id="n-soon">–</b></div>
+    <div class="h"><p class="lbl">Hidden</p><b id="n-hidden">–</b></div>
+  </div>
+  <div class="tabs" id="tabs" role="group" aria-label="Category"></div>
+  <div class="bulk" id="bulk"></div>
+  <div class="list" id="list"></div>
+  <p class="note">Each Save or Publish uses 1 of the 250 free Global Config writes per month; switching on this page is free until you save.</p>
+</main>
+
+<div class="bar" id="bar" hidden>
+  <div class="in">
+    <p class="msg" id="msg" role="status"></p>
+    <div class="confirm" id="confirm"><span class="note" id="confirm-t"></span><button class="btn" type="button" id="cancel-pub">Cancel</button><button class="btn pri" type="button" id="do-pub">Publish now</button></div>
+    <div id="acts" style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" type="button" id="save">Save draft</button>
+      <a class="btn" id="preview" target="_blank" rel="noopener">Preview draft ↗</a>
+      <button class="btn pri" type="button" id="publish">Publish to live</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROJECTS = [{"key": "renmoney-loan-optimization", "title": "Loan Flow Optimization", "client": "Renmoney MFB", "year": "2024", "cat": "p", "note": ""}, {"key": "renmoney-product-revamp-2", "title": "Full App Revamp", "client": "Renmoney MFB", "year": "2024", "cat": "p", "note": ""}, {"key": "rivr-product", "title": "Cross-border Payments Platform", "client": "Rivr", "year": "2026", "cat": "p", "note": ""}, {"key": "quickteller-remit", "title": "QuickTeller Remit", "client": "Interswitch Group Limited", "year": "2025", "cat": "p", "note": ""}, {"key": "vervemobile", "title": "VerveMobile Super App", "client": "Interswitch Group Limited", "year": "2025", "cat": "p", "note": ""}, {"key": "startbutton-bulk-payment", "title": "Bulk Payment Disbursal", "client": "Startbutton Africa", "year": "2024", "cat": "p", "note": ""}, {"key": "dropcart-product", "title": "Delivery App Design", "client": "DropCart", "year": "2026", "cat": "p", "note": ""}, {"key": "pressone-community-platform", "title": "Community Platform", "client": "PressOne Africa", "year": "2024", "cat": "p", "note": ""}, {"key": "lets-chipin", "title": "Potlucking for Friends", "client": "Let's Chipin", "year": "2024", "cat": "p", "note": "WIP"}, {"key": "anwrk-brand-product", "title": "Branding, Mobile & Website Design", "client": "Anwrk", "year": "2024", "cat": "p", "note": ""}, {"key": "baige-waas", "title": "Wallet-as-a-Service Platform", "client": "Baige Tech", "year": "2023", "cat": "p", "note": ""}, {"key": "lendsqr-cash-split", "title": "Cash Split Feature", "client": "LendSqr", "year": "2025", "cat": "p", "note": ""}, {"key": "renny-design-system", "title": "Renny Design System", "client": "Renmoney MFB", "year": "2024", "cat": "d", "note": ""}, {"key": "current-design-system", "title": "Current Design System", "client": "Altovida · Rivr", "year": "2026", "cat": "d", "note": ""}, {"key": "ledger-design-system", "title": "Ledger Design System · Business Banking", "client": "Baige Tech", "year": "2025", "cat": "d", "note": ""}, {"key": "basket-design-system", "title": "Basket Design System", "client": "Altovida · DropCart", "year": "2026", "cat": "d", "note": "code-locked"}, {"key": "corridor-design-system", "title": "Corridor Design System · QuickTeller Remit", "client": "Interswitch Group Limited", "year": "2025", "cat": "d", "note": "code-locked"}, {"key": "signal-design-system", "title": "Signal Design System · VerveMobile", "client": "Interswitch Group Limited", "year": "2024", "cat": "d", "note": "code-locked"}, {"key": "altovida-branding", "title": "Brand Identity Design", "client": "Altovida", "year": "", "cat": "b", "note": "WIP"}, {"key": "centric-ai", "title": "Centric AI Branding", "client": "Davu AI", "year": "2023", "cat": "b", "note": ""}, {"key": "techcircle-rebrand", "title": "Full Rebrand Pitch", "client": "Techcircle", "year": "2023", "cat": "b", "note": ""}, {"key": "rivr-branding", "title": "Brand Identity Design", "client": "Rivr", "year": "", "cat": "b", "note": "WIP"}, {"key": "dropcart-branding", "title": "Brand Identity Design", "client": "Dropcart", "year": "", "cat": "b", "note": "WIP"}, {"key": "drawp-branding", "title": "Brand Identity Design", "client": "Drawp", "year": "", "cat": "b", "note": "WIP"}, {"key": "pressone-payment-exit-flows", "title": "Payment and Exit Intent Flows", "client": "PressOne Africa", "year": "2024", "cat": "o", "note": ""}, {"key": "intelai-platform", "title": "AI Platform for Web3 Founders", "client": "Intel AI", "year": "2024", "cat": "o", "note": ""}, {"key": "strategy-360-smart-business", "title": "AI for Smart Business Strategy", "client": "Strategy 360", "year": "2023", "cat": "o", "note": ""}, {"key": "pressone-call-flow", "title": "Set Up Call Flow", "client": "PressOne Africa", "year": "2024", "cat": "o", "note": "WIP"}, {"key": "strategy-360-simulation", "title": "Business Strategy Simulation", "client": "Strategy 360", "year": "2024", "cat": "o", "note": "WIP"}, {"key": "renmoney-website-design-2", "title": "2.0 Website Design", "client": "Renmoney MFB", "year": "2024", "cat": "o", "note": "WIP"}, {"key": "davu-ai-website-design", "title": "Website Design", "client": "Davu AI", "year": "2024", "cat": "o", "note": "WIP"}, {"key": "davu-ai-social", "title": "Social Media Branding", "client": "Davu AI", "year": "2025", "cat": "o", "note": "WIP"}, {"key": "anwrk-brand-identity", "title": "Brand Identity Design", "client": "Anwrk", "year": "2025", "cat": "o", "note": ""}, {"key": "anwrk-mobile-website-v2", "title": "Mobile & Website Design", "client": "Anwrk", "year": "2024", "cat": "o", "note": "WIP"}, {"key": "made-by-dammy-logo-folio", "title": "Logo Folio", "client": "Made by Dammy", "year": "2025", "cat": "o", "note": "WIP"}, {"key": "igho-maraki-branding", "title": "Igho Maraki Branding", "client": "Igho Maraki", "year": "2024", "cat": "o", "note": "WIP"}, {"key": "pressone-email-templates", "title": "Email Template Designs", "client": "PressOne Africa", "year": "2024", "cat": "o", "note": "WIP"}, {"key": "renmoney-design-vision-strategy", "title": "Design Vision Strategy", "client": "Renmoney MFB", "year": "2024", "cat": "o", "note": "WIP"}, {"key": "request:GTM Data Strategy", "title": "GTM Data Strategy", "client": "Interswitch Group Limited", "year": "2025", "cat": "o", "note": "on request"}, {"key": "request:Product Strategy", "title": "Product Strategy", "client": "Doshpal Finance", "year": "2025", "cat": "o", "note": "on request"}, {"key": "request:Product User Persona", "title": "Product User Persona", "client": "Renmoney MFB", "year": "2024", "cat": "o", "note": "on request"}];
+const DEFAULTS = {"renmoney-loan-optimization": "open", "renmoney-product-revamp-2": "open", "rivr-product": "open", "quickteller-remit": "open", "vervemobile": "open", "startbutton-bulk-payment": "open", "dropcart-product": "open", "pressone-community-platform": "open", "lets-chipin": "open", "anwrk-brand-product": "open", "baige-waas": "open", "lendsqr-cash-split": "open", "renny-design-system": "open", "current-design-system": "open", "ledger-design-system": "open", "basket-design-system": "open", "corridor-design-system": "open", "signal-design-system": "open", "altovida-branding": "open", "centric-ai": "open", "techcircle-rebrand": "open", "rivr-branding": "open", "dropcart-branding": "open", "drawp-branding": "open", "pressone-payment-exit-flows": "soon", "intelai-platform": "soon", "strategy-360-smart-business": "soon", "pressone-call-flow": "soon", "strategy-360-simulation": "soon", "renmoney-website-design-2": "soon", "davu-ai-website-design": "soon", "davu-ai-social": "soon", "anwrk-brand-identity": "soon", "anwrk-mobile-website-v2": "soon", "made-by-dammy-logo-folio": "soon", "igho-maraki-branding": "soon", "pressone-email-templates": "soon", "renmoney-design-vision-strategy": "soon", "request:GTM Data Strategy": "soon", "request:Product Strategy": "soon", "request:Product User Persona": "soon"};
+(function(){
+  const CATS=[["all","All"],["p","Product Design"],["d","Design Systems"],["b","Brand Design"],["o","Others"]];
+  const LABEL={p:"Product Design",d:"Design Systems",b:"Brand Design",o:"Others"};
+  const STATES=[["open","Open"],["soon","Coming soon"],["hidden","Hidden"]];
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  let pw="", tab="all", live=null, saved=null, draft={}, previewKey="", liveAt=null, draftAt=null, busy=false;
+  try{ pw=sessionStorage.getItem("sc-pw")||""; tab=sessionStorage.getItem("sc-tab")||"all"; }catch(e){}
+
+  async function api(action, extra){
+    const r=await fetch("/api/admin",{method:"POST",headers:{"content-type":"application/json","x-admin-password":pw},body:JSON.stringify(Object.assign({action},extra||{}))});
+    let j={}; try{ j=await r.json(); }catch(e){}
+    if(!r.ok){ const e=new Error(j.message||j.error||("Request failed ("+r.status+")")); e.code=j.error||r.status; throw e; }
+    return j;
+  }
+  const same=(a,b)=>PROJECTS.every(p=>(a||{})[p.key]===(b||{})[p.key]);
+  const base=()=>live||DEFAULTS;
+  const fmt=t=>t?new Date(t).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"}):"";
+  const diffN=(a,b)=>PROJECTS.filter(p=>(a||{})[p.key]!==(b||{})[p.key]).length;
+
+  function render(){
+    const vals=Object.values(draft);
+    $("n-open").textContent=vals.filter(v=>v==="open").length;
+    $("n-soon").textContent=vals.filter(v=>v==="soon").length;
+    $("n-hidden").textContent=vals.filter(v=>v==="hidden").length;
+    $("live-at").textContent=live?("Published "+fmt(liveAt)):"Using the settings built into the site";
+    $("live-n").textContent=live?"":"Nothing published from here yet";
+    $("draft-at").textContent=saved?("Saved "+fmt(draftAt)):"No draft saved yet";
+    const unsaved=!same(draft,saved||base()) || !saved;
+    const toLive=diffN(saved||{},base());
+    $("draft-n").textContent=saved?(toLive?toLive+" change"+(toLive===1?"":"s")+" not live yet":"Matches the live site"):"";
+    $("tabs").innerHTML=CATS.map(c=>{const n=c[0]==="all"?PROJECTS.length:PROJECTS.filter(p=>p.cat===c[0]).length;return `<button type="button" data-t="${c[0]}" aria-pressed="${tab===c[0]}">${c[1]} · ${n}</button>`}).join("");
+    $("bulk").innerHTML=`<span>Set ${tab==="all"?"everything":esc(LABEL[tab])} to</span>`+STATES.map(s=>`<button type="button" data-bulk="${s[0]}">${s[1]}</button>`).join("");
+    let html="";
+    (tab==="all"?["p","d","b","o"]:[tab]).forEach(g=>{
+      const rs=PROJECTS.filter(p=>p.cat===g); if(!rs.length) return;
+      html+=`<div class="grp"><p class="lbl">${LABEL[g]}</p></div>`;
+      rs.forEach(p=>{
+        const v=draft[p.key], flag=v!==(base()[p.key])?`<span class="flag" title="Different from the live site">changed</span>`:"";
+        html+=`<div class="row" data-k="${esc(p.key)}"><div class="t"><p class="nm">${esc(p.title)}${flag}</p><p class="mt">${esc(p.client)}${p.year?" · "+esc(p.year):""}${p.note?" · "+esc(p.note):""}</p></div>`+
+        `<div class="seg" role="group" aria-label="Visibility for ${esc(p.title)}">`+STATES.map(s=>`<button type="button" data-s="${s[0]}" aria-pressed="${v===s[0]}">${s[1]}</button>`).join("")+`</div></div>`;
+      });
+    });
+    $("list").innerHTML=html;
+    // action bar
+    const dirty=!saved || !same(draft,saved);
+    const canPreview=!!saved && !dirty;
+    const canPublish=!!saved && !dirty && toLive>0;
+    $("save").setAttribute("aria-disabled",String(busy||!dirty));
+    $("preview").setAttribute("aria-disabled",String(!canPreview));
+    $("preview").href=canPreview?("/?preview="+encodeURIComponent(previewKey)+"#work"):"#";
+    $("publish").setAttribute("aria-disabled",String(busy||!canPublish));
+    ["st1","st2","st3","st4"].forEach(i=>$(i).classList.remove("on"));
+    if(dirty){ $("st"+(same(draft,saved||base())&&saved?"1":"2")).classList.add("on");
+      $("msg").innerHTML=`<b>${diffN(draft,saved||base())} unsaved change${diffN(draft,saved||base())===1?"":"s"}.</b> Save the draft to preview it.`; if(!diffN(draft,saved||base())) $("msg").textContent="Change a switch, then save the draft."; }
+    else if(toLive){ $("st3").classList.add("on"); $("st4").classList.add("on"); $("msg").innerHTML=`<b>Draft saved.</b> Preview it, then publish ${toLive} change${toLive===1?"":"s"} to the live site.`; }
+    else { $("msg").textContent="Everything is live. Change a switch to start a new draft."; }
+  }
+
+  async function load(){
+    const j=await api("get");
+    live=j.live; saved=j.draft; liveAt=j.liveAt; draftAt=j.draftAt; previewKey=j.previewKey||"";
+    draft=Object.assign({},DEFAULTS,live||{},saved||{});
+    $("gate-wrap").hidden=true; $("app").hidden=false; $("bar").hidden=false;
+    render();
+  }
+
+  $("gate").addEventListener("submit",async e=>{
+    e.preventDefault(); pw=$("pw").value; $("gate-err").textContent="";
+    try{ await load(); try{ sessionStorage.setItem("sc-pw",pw); }catch(_){} }
+    catch(err){ $("gate-err").textContent= err.code==="wrong_password"?"That password isn’t right. Try again.": err.code==="no_password"?"ADMIN_PASSWORD isn’t set in Vercel yet.": ("Couldn’t open the controls: "+err.message); }
+  });
+  document.addEventListener("click",async e=>{
+    const t=e.target.closest("[data-t]"); if(t){ tab=t.dataset.t; try{sessionStorage.setItem("sc-tab",tab)}catch(_){ } render(); return; }
+    const b=e.target.closest(".seg button"); if(b){ draft[b.closest(".row").dataset.k]=b.dataset.s; render(); return; }
+    const k=e.target.closest("[data-bulk]"); if(k){ PROJECTS.filter(p=>tab==="all"||p.cat===tab).forEach(p=>draft[p.key]=k.dataset.bulk); render(); return; }
+  });
+  $("save").addEventListener("click",async()=>{
+    if($("save").getAttribute("aria-disabled")==="true") return;
+    busy=true; render(); $("msg").textContent="Saving draft…";
+    try{ const j=await api("save",{draft}); saved=Object.assign({},draft); draftAt=j.draftAt; busy=false; render(); }
+    catch(err){ busy=false; render(); $("msg").textContent="Couldn’t save: "+err.message; }
+  });
+  $("preview").addEventListener("click",e=>{ if($("preview").getAttribute("aria-disabled")==="true") e.preventDefault(); });
+  $("publish").addEventListener("click",()=>{
+    if($("publish").getAttribute("aria-disabled")==="true") return;
+    const n=diffN(saved,base()); $("confirm-t").textContent=`Publish ${n} change${n===1?"":"s"} to madebydammy.xyz?`;
+    $("acts").style.display="none"; $("confirm").classList.add("on"); $("do-pub").focus();
+  });
+  $("cancel-pub").addEventListener("click",()=>{ $("confirm").classList.remove("on"); $("acts").style.display="flex"; });
+  $("do-pub").addEventListener("click",async()=>{
+    $("confirm").classList.remove("on"); $("acts").style.display="flex"; busy=true; render(); $("msg").textContent="Publishing…";
+    try{ const j=await api("publish"); live=Object.assign({},saved); liveAt=j.liveAt; busy=false; render(); $("msg").innerHTML="<b>Published.</b> The live site updates within about a minute."; }
+    catch(err){ busy=false; render(); $("msg").textContent="Couldn’t publish: "+err.message; }
+  });
+  if(pw) load().catch(()=>{ pw=""; try{sessionStorage.removeItem("sc-pw")}catch(_){ } });
+})();
+</script>
+</body>
+</html>
