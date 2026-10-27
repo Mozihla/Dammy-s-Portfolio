@@ -898,13 +898,15 @@ html,body{overflow-x:clip}
 .land-intro{font-size:32px;line-height:1.25;letter-spacing:.01em;font-weight:300;color:var(--white);margin:0}
 .land-r{display:flex;flex-direction:column;gap:13px;font-size:12px;line-height:1.3;letter-spacing:-.02em;font-weight:400;color:var(--grey)}
 .land-r b{font-weight:400;color:var(--white)}
-.land .tzone.land-zone{margin-top:clamp(40px,7vh,68px);height:clamp(170px,calc(100vh - 700px),317px);padding:0;border:0;display:grid;place-items:center;overflow:hidden}
+.land .tzone.land-zone{margin-top:clamp(40px,7vh,68px);height:clamp(170px,calc(100vh - 700px),317px);padding:0;border:0;display:grid;place-items:center;overflow:visible}
 .land-zone::before{display:none}
-.land-zone .tlayer{inset:0;overflow:hidden}
+.land-zone .tlayer{inset:0;overflow:visible;z-index:5}
 .land-zone .thint{position:relative;right:auto;bottom:auto;color:var(--grey);font-size:14px;text-transform:uppercase;letter-spacing:-.04em}
-.land-note{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:19px;color:var(--grey);text-transform:uppercase}
-.ln-dot{width:8px;height:8px;border-radius:50%;background:var(--orange-02);flex:none;animation:lnPulse 2.4s ease-in-out infinite}
-@keyframes lnPulse{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--orange-02) 18%,transparent)}}
+.land-note{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:22px;color:var(--grey);text-transform:uppercase}
+.ln-dot{position:relative;width:8px;height:8px;border-radius:50%;background:var(--orange-02);flex:none;box-shadow:0 0 0 3px var(--bg),0 0 0 4px color-mix(in srgb,var(--orange-02) 70%,transparent),0 0 12px 4px rgba(241,96,1,.55);animation:lnBeam 1.8s ease-in-out infinite}
+.ln-dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--orange-02);animation:lnRing 1.8s ease-out infinite}
+@keyframes lnBeam{50%{box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--orange-02),0 0 20px 8px rgba(241,96,1,.8)}}
+@keyframes lnRing{from{transform:scale(1);opacity:.9}to{transform:scale(2.6);opacity:0}}
 .rot.land-rot{justify-content:center;gap:.095em;font-size:min(182px,10.4vw);line-height:1.2;margin:0 calc(50% - 50vw);letter-spacing:.01em}
 .land-rot .track span:first-child{color:var(--ink)}
 .land-cue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;color:var(--grey);text-transform:uppercase;opacity:calc(1 - var(--p)*4);transition:color .2s}
@@ -927,12 +929,12 @@ html,body{overflow-x:clip}
   .land-top .mslide{margin:28px 0 4px}
   .land-r{font-size:15px;line-height:1.45;margin-top:28px}
   .land .tzone.land-zone{display:none}
-  .land-note{margin-top:48px;font-size:12px;justify-content:flex-start}
-  .rot.land-rot{justify-content:flex-start;margin:6px 0 0;font-size:clamp(40px,12vw,64px);flex-wrap:wrap}
+  .land-note{margin-top:24px;font-size:12px;justify-content:flex-start}
+  .rot.land-rot{justify-content:flex-start;margin:48px 0 0;font-size:clamp(40px,12vw,64px);flex-wrap:wrap}
   .land-cue{display:none}
   .sheet{border-radius:24px 24px 0 0;padding-top:56px}
 }
-@media (prefers-reduced-motion:reduce){.ln-dot,.land-cue .arr{animation:none}}
+@media (prefers-reduced-motion:reduce){.land-cue .arr{animation:none}}
 /* Profile: reach-out icon row (Figma 3149:18253) */
 .ricons{display:flex;align-items:center;gap:32px}
 .ric{position:relative;display:inline-grid;place-items:center;width:24px;height:24px;color:var(--ink);transition:color .2s,transform .25s var(--ease-out,ease)}
@@ -1099,6 +1101,7 @@ const Motion = (() => {
   }
   const top = () => lenis ? lenis.scrollTo(0,{immediate:true}) : scrollTo(0,0);
   const jump = el => { const y = el.getBoundingClientRect().top + scrollY; lenis ? lenis.scrollTo(y,{immediate:true,force:true}) : scrollTo(0,y); };
+  const toTop = () => lenis ? lenis.scrollTo(0,{duration:1.4,force:true}) : scrollTo({top:0,behavior:RM?"auto":"smooth"});
   const scrollToEl = el => lenis ? lenis.scrollTo(el,{offset:-24,duration:1.4}) : el.scrollIntoView({behavior:RM?"auto":"smooth"});
 
   /* Split words, keeping inline tags */
@@ -1306,7 +1309,7 @@ const Motion = (() => {
     document.body.appendChild(curtain);
     initScroll(); initPointer(); initProgress(); initTrail();
   }
-  return {init, observe, go, intro, scrollToEl, jump, top, lock, RM, armTrail: () => trail && trail.arm()};
+  return {init, observe, go, intro, scrollToEl, jump, toTop, top, lock, RM, armTrail: () => trail && trail.arm()};
 })();
 
 /* =====================================================================
@@ -1507,7 +1510,6 @@ function Sidebar(active){
   return `<aside class="side">
     <nav class="snav mono" aria-label="Sections">${MARKERS.map(m=>Marker(m, FILTERS.some(f=>f[0]===active) ? "work" : active)).join("")}
       <button class="marker em" data-copy>Copy my email ${ICON.copy}</button></nav>
-    <p class="wip mono"><span class="wip-dot" aria-hidden="true"></span><span><b>Work in progress.</b> This portfolio is still growing, but there are some exciting case studies in here already.</span></p>
 </aside>`;
 }
 function Hero(){
@@ -1754,8 +1756,8 @@ function Landing(){
       </div>
     </div>
     <div class="tzone land-zone"><div class="tlayer" aria-hidden="true"></div><p class="thint mono" aria-hidden="true">Move your cursor here ↗</p></div>
-    <p class="land-note mono"><span class="ln-dot" aria-hidden="true"></span>New case studies are landing through the year.</p>
     <div class="rot land-rot" id="rot"><span class="more">More</span><span class="win"><span class="track"><span>than Design</span><span>about Dammy</span></span></span></div>
+    <p class="land-note mono"><span class="ln-dot" aria-hidden="true"></span>New case studies are landing through the year.</p>
     <a class="land-cue mono" href="#work" aria-label="Scroll to works"><span>Works</span><span class="arr" aria-hidden="true">↓</span></a>
   </section>`;
 }
@@ -1768,7 +1770,7 @@ function Component2(names, rev){
 }
 
 /* ========================= Frames ========================= */
-function Shell(active, body){ return Header("Normal", active) + Landing() + `<div class="sheet" id="works"><div class="main">${Sidebar(isFilter(active)?active:"work")}<div class="content">${body}</div></div><p class="wip wip-m mono"><span class="wip-dot" aria-hidden="true"></span><span><b>Work in progress.</b> This portfolio is still growing, but there are some exciting case studies in here already.</span></p></div>`; }
+function Shell(active, body){ return Header("Normal", active) + Landing() + `<div class="sheet" id="works"><div class="main">${Sidebar(isFilter(active)?active:"work")}<div class="content">${body}</div></div></div>`; }
 function Profile(){
   const tools = IMG.tools.map(([name,src],i) => `<div class="tool${i===IMG.tools.length-1?" wide":""}"${name?` title="${esc(name)}"`:""}><img src="${src}" alt="${esc(name)}" loading="lazy"></div>`).join("");
   return Header("Back","profile") + `<div class="about">
@@ -2021,6 +2023,11 @@ function copiedLabel(c){
 }
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("on"),2200); }
 document.addEventListener("click", e => {
+  const hm = e.target.closest('a[href="#home"]');
+  if(hm && !hm.classList.contains("back") && (curKey==="home" || isFilter(curKey)) && $("#land")){
+    e.preventDefault(); if(location.hash !== "#home") history.pushState(null,"","#home"); curKey = "home"; Motion.toTop();
+    document.documentElement.classList.remove("menu-open"); return;
+  }
   const c = e.target.closest("[data-copy]");
   if(c){ e.preventDefault(); const ok = () => c.hasAttribute("data-ic") ? bubble(c,"Email copied!") : copiedLabel(c); (navigator.clipboard ? navigator.clipboard.writeText(CONFIG.email) : Promise.reject()).then(ok, ()=>bubble(c,CONFIG.email,true)); return; }
   if(e.target.closest("[data-unset]")){ e.preventDefault(); toast("Link not set yet"); return; }
@@ -2040,7 +2047,7 @@ addEventListener("hashchange", ()=>{
   const k = (location.hash||"").slice(1) || "home";
   if(onWorks(k) && onWorks(curKey) && $("#works")){
     if(isFilter(k)){ applyFilter(k); Motion.scrollToEl($("#works")); }
-    else Motion.scrollToEl($("#app"));
+    else Motion.toTop();
     curKey = k; return;
   }
   if(isFilter(k) && isFilter(curKey) && applyFilter(k)){ curKey = k; return; }
