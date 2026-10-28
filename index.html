@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap">
 <link rel="preload" href="fonts/funnel-display-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/open-sauce-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/asta-sans-700.woff2" as="font" type="font/woff2" crossorigin>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};window.va("beforeSend",function(e){try{var u=new URL(e.url),h=u.hash.replace(/^#\/?/,"");if(h){u.pathname="/"+h;u.hash="";}e.url=u.toString();}catch(_){}return e;});</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <style>
@@ -28,10 +28,10 @@
 @font-face{font-family:"Funnel Display";src:url("fonts/funnel-display-500.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
 @font-face{font-family:"Funnel Display";src:url("fonts/funnel-display-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
 @font-face{font-family:"Funnel Display";src:url("fonts/funnel-display-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:"Open Sauce Sans";src:url("fonts/open-sauce-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:"Open Sauce Sans";src:url("fonts/open-sauce-500.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
-@font-face{font-family:"Open Sauce Sans";src:url("fonts/open-sauce-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
-@font-face{font-family:"Open Sauce Sans";src:url("fonts/open-sauce-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Asta Sans";src:url("fonts/asta-sans-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Asta Sans";src:url("fonts/asta-sans-500.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"Asta Sans";src:url("fonts/asta-sans-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"Asta Sans";src:url("fonts/asta-sans-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
 /* Layout: Figma frames are 1728×1117 with a 1435px content box at x=150.
    Header y=32 (80h) · hero y=222 · sidebar/content y=480 · content column x=782 (632 into the box), 800 wide.
    Tokens = the file's styles: Orange 01 #F24304, Orange 02 #F16001, Grey #777777, White, Black 02 #292929. */
@@ -46,7 +46,7 @@
   --card-shadow:0 40px 60px -20px rgba(0,0,0,.65),0 2px 0 rgba(255,255,255,.02) inset; --logo-filter:grayscale(1) brightness(1.5);
   --mono:"Funnel Display","Helvetica Neue",Arial,sans-serif; /* labels & small UI text: Funnel Display, all caps */
   --sans:"Funnel Display","Helvetica Neue",Helvetica,Arial,sans-serif;
-  --display:"Open Sauce Sans","Funnel Display","Helvetica Neue",Arial,sans-serif;
+  --display:"Asta Sans","Funnel Display","Helvetica Neue",Arial,sans-serif;
   --box:1435px; --gutter:max(16px,calc((100vw - var(--box))/2));
 }
 /* Light mode: warm paper ground, near-black type; orange stays the accent */
@@ -935,7 +935,7 @@ html,body{overflow-x:clip}
 :root[data-theme="light"] .sheet{box-shadow:0 -40px 70px -30px rgba(40,30,20,.16)}
 /* Works view = the original build: "This is / More than Design", then sidebar (sticky) + case grid on the right */
 .sheet .hero{margin-top:110px}
-.sheet .main{margin-top:150px;grid-template-columns:198px minmax(0,800px);justify-content:space-between;column-gap:24px}
+.sheet .main{margin-top:150px;grid-template-columns:198px minmax(0,800px);justify-content:start;column-gap:max(48px,calc(100% - 1198px))} /* projects sit 200px closer to the side nav */
 .sheet .side{position:sticky;top:40px;align-self:start}
 @media (min-width:761px) and (prefers-reduced-motion:no-preference){
   .land{transform:translateY(calc(var(--p)*-40px)) scale(calc(1 - var(--p)*.07));opacity:calc(1 - var(--p)*.65);will-change:transform,opacity}
@@ -976,7 +976,7 @@ html,body{overflow-x:clip}
 @media (max-width:1100px){.sheet .main{grid-template-columns:minmax(0,1fr);margin-top:56px}.sheet .side{position:static}}
 @media (max-width:760px){.sheet .hero{margin-top:32px}.sheet{padding-top:8px}}
 
-/* ===== Type system (Oct 2026): Open Sauce Sans for headers, Funnel Display for body (-3%), labels/UI text in Funnel Display caps (-1%) =====
+/* ===== Type system (Oct 2026): Asta Sans for headers, Funnel Display for body (-3%), labels/UI text in Funnel Display caps (-1%) =====
    Headers 28px and up are set in Bold; smaller headers in Medium/SemiBold. */
 body{font-family:var(--sans);letter-spacing:-.03em;text-rendering:optimizeLegibility;font-feature-settings:"kern" 1}
 .mono,.label,.fm4,.fm5,.fm6,.fm7,.fx-l,.rc-l,.chip,.cur .lbl,.cbub,.toast,.kmeta,.intro-l .top,.intro-l .lab,.intro-l .cnt,.cs-cap,.nx small,.nx .see,
@@ -1107,7 +1107,7 @@ window.DS_LOCK = {"salt": "38MzdTc58+/Jj7fUDhm48g==", "iter": 310000, "iv": "/OP
       if (s.cards) body += `<div class="rgrid">${s.cards.map(c=>`<div><b>${e(c.title)}</b><span>${md(c.body)}</span></div>`).join("")}</div>`;
       if (s.steps) body = `<ol class="rphase${s.steps.length>4?" r5":""}">${s.steps.map(x=>`<li><b>${e(x.title)}</b><span>${md(x.body)}</span></li>`).join("")}</ol>` + body;
       if (s.compare) body += `<div class="rba"><div><p class="rc-l">Before</p>${UL(s.compare.before)}</div><div><p class="rc-l">After</p>${UL(s.compare.after)}</div></div>`;
-      if (s.id === "role" && REL[o.slug]) body += `<p><a class="rel-link" href="#work/${REL[o.slug][0]}">See the ${e(REL[o.slug][1])} product case study →</a></p>`;
+      /* no cross-link to product case studies: categories are kept separate */
       const head = s.id==="audit" ? "" : "";
       secs.push({t:"html", l:s.heading, h:S(s.heading, head, body)});
       (s.images||[]).forEach(im => img(im, s));
@@ -1990,14 +1990,16 @@ const SITE = {
 };
 function CaseStudy(slug){
   const i = CASE[slug], c = CASES[i];
-  const ORDER = [...new Set(["p","d","b"].flatMap(k=>WORK.filter(w=>w[4]===k && w[3] in CASE && statusOf(w)==="open").map(w=>w[3])))];
+  /* "Next" stays inside the same category (product → product, design system → design system, brand → brand) */
+  const catOf = sl => (WORK.find(w=>w[3]===sl)||[])[4];
+  const cat = catOf(slug);
+  const ORDER = [...new Set(WORK.filter(w=>(!cat || w[4]===cat) && w[3] in CASE && statusOf(w)==="open").map(w=>w[3]))];
   const oi = ORDER.indexOf(slug), n = oi<0 ? CASES[(i+1)%CASES.length] : CASES[CASE[ORDER[(oi+1)%ORDER.length]]];
   const hero = CASE_MOTION[slug];
   const toc = c.toc.map(t=>[t[0], t[1]===null?null:(hero && hero.mode!=="replace" && t[1]>=Math.max(1,c.secs.findIndex(s=>s.t==="img")) ? t[1]+1 : t[1])]).filter(t=>t[1]!==null).map(([l,s])=>`<a href="#work/${slug}" data-sec="s${s}"><span class="dash"></span>${esc(l)}</a>`).join("");
   const url = SITE[slug] || c.site;
   const site = url ? `<a class="pill mono" data-mag href="${esc(url)}" target="_blank" rel="noopener">Go to Website</a>` : "";
-  const ds = (window.DS_REL||{})[slug];
-  const rel = ds ? `<a class="pill mono" data-mag href="#work/${ds}">Design system ↗</a>` : "";
+  const rel = ""; /* product and design-system case studies are kept separate: no cross-links */
   let list = c.secs.slice();
   if(hero){
     const fi = list.findIndex(s=>s.t==="img");
